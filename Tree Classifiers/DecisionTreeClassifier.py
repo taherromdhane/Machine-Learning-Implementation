@@ -22,7 +22,7 @@ def printPQ(pq) :
   
 class DecisionTreeClassifier :
     
-    def __init__(self, min_samples_split = 2, min_samples_leaf = 1, d, max_depth = None, alpha) :
+    def __init__(self, min_samples_split = 2, min_samples_leaf = 1, d = None, max_depth = None, alpha = 0.0) :
         # Init method to set initial attributes
         # min_samples_split : minimum number if node before it's considered by default as leaf
         # alpha : parameter for pruning
@@ -106,7 +106,7 @@ class DecisionTreeClassifier :
         
         # get indices if given else it's a root node and gets all data
         if indices is not None :
-            node_data = self.data.iloc[indices]
+            node_data = self.data.loc[indices]
         else :
             node_data = self.data
         
@@ -210,6 +210,7 @@ class DecisionTreeClassifier :
         
         if root is None :
             root = self.root
+        
         y = X.apply(lambda x : self._propagate(root, x), axis=1)
         
         return y
@@ -323,7 +324,7 @@ class DecisionTreeClassifier :
         self._set_index()
             
     
-    def build(self, target, data = None, data_path = None, verbose = False) :
+    def fit(self, target, data = None, data_path = None, verbose = False) :
         # method that handles the logic of building the tree from the data given to it
         
         assert(data is not None or data_path is not None)
@@ -340,7 +341,7 @@ class DecisionTreeClassifier :
         start_time = time.time()
         self.root = self._build_node(root)
         if verbose :
-            print("Built tree in --- %s seconds ---\n" % (time.time() - start_time))
+            print("Fit tree in --- %s seconds ---\n" % (time.time() - start_time))
             
         self._set_index()
         
@@ -356,7 +357,7 @@ class DecisionTreeClassifier :
     def __repr__(self) :
         # method for printing the decision tree
         
-        def_str = "Decision Tree Classifier Object \n"
+        def_str = "Decision Tree Classifier \n"
         
         attrts_str = "minimum number of samples to split node : {}, alpha : {}, default : {}, target variable : {}\n\n" \
             .format(self.min_samples_split, self.alpha, self.d, self.target)
